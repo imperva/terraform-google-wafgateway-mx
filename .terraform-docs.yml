@@ -1,0 +1,44 @@
+sort:
+  by: required
+
+content: |-
+  {{ .Header }}
+  # Imperva WAF Gateway Management Server on Google Cloud
+  This Terraform module provisions an Imperva WAF Gateway Management Server (also known as 'MX') on GCP.
+  The MX is a critical component in the Imperva WAF Gateway architecture, serving as the centralized management interface for configuring Imperva WAF Gateways.
+
+  {{ .Requirements }}
+
+  For the GCP prerequisites, please see the [documentation](https://docs.imperva.com/bundle/v15.3-waf-on-google-cloud-platform-installation-guide/page/84150.htm).
+
+  ## Usage
+  ```
+  provider "google" {
+    project = "my-project"
+    region = "europe-west3"
+  }
+
+  variable "mx_password" {
+    type = string
+    description = "The password for the WAF Management Server"
+    sensitive = true
+  }
+
+  module "imperva_mx" {
+    source = "imperva/waf-mx/google"
+    waf_version = "latest"
+    mx_password = var.mx_password
+    vpc_network = "my-vpc-network"
+    subnet_name = "my-subnet"
+    timezone = "UTC"
+    instance_type = "n2-standard-4"
+    zone = "europe-west3-a"
+    ssh_access_source_ranges = ["10.0.1.0/24", "10.0.2.0/24"]
+    ui_access_source_ranges = ["10.0.0.0/8"]
+  }  
+  ```
+  {{ .Modules }}
+  {{ .Resources }}
+  {{ .Inputs }}
+  {{ .Outputs }}
+  {{ .Footer }}
