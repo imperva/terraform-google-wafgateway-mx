@@ -13,7 +13,8 @@ The MX is a critical component in the Imperva WAF Gateway architecture, serving 
 For the GCP prerequisites, please see the [documentation](https://docs.imperva.com/bundle/v15.3-waf-on-google-cloud-platform-installation-guide/page/84150.htm).
 
 ## Usage
-```
+### Basic example
+```hcl
 provider "google" {
   project = "my-project"
   region = "europe-west3"
@@ -26,8 +27,8 @@ variable "mx_password" {
 }
 
 module "imperva_mx" {
-  source = "imperva/waf-mx/google"
-  waf_version = "latest"
+  source = "imperva/wafgateway/mx/google"
+  waf_version = "15.3.0.20"
   mx_password = var.mx_password
   vpc_network = "my-vpc-network"
   subnet_name = "my-subnet"
@@ -36,8 +37,35 @@ module "imperva_mx" {
   zone = "europe-west3-a"
   ssh_access_source_ranges = ["10.0.1.0/24", "10.0.2.0/24"]
   ui_access_source_ranges = ["10.0.0.0/8"]
-}  
+}
 ```
+### Supported WAF Gateway versions
+This version of the module supports the following WAF Gateway versions:
+* 14.7.0.110
+* 14.7.0.120
+* 14.7.0.130
+* 15.2.0.10
+* 15.3.0.10
+* 15.3.0.20
+
+The `waf_version` input variable must be set to one of these versions. If you need to use a different version, please open an issue or pull request.
+
+### Cross-module reference
+If you are using the Gateway module in conjunction with the MX module, you can reference the MX outputs directly in the Gateway module configuration:
+```hcl
+module "imperva_gw" {
+  source = "imperva/wafgateway/gw/google"
+  waf_version = "15.3.0.20"
+  management_server_config = {
+    ip = module.imperva_mx.management_server_ip
+    password = var.mx_password
+    vpc_network = "my-vpc-network"
+    network_tag = module.imperva_mx.network_tag
+  }
+  ...
+}
+```
+This allows you to register your WAF Gateway instances to your MX without defining explicit dependencies or hard-coding the MX IP address or network tag.
 ## Modules
 
 | Name | Source | Version |
@@ -66,7 +94,7 @@ module "imperva_mx" {
 | <a name="input_mx_password"></a> [mx\_password](#input\_mx\_password) | A password for your Management Server's admin user. | `string` | n/a | yes |
 | <a name="input_subnet_name"></a> [subnet\_name](#input\_subnet\_name) | The subnet name for your Management Server instance. Must be under the specified VPC network. | `string` | n/a | yes |
 | <a name="input_vpc_network"></a> [vpc\_network](#input\_vpc\_network) | The name of your target VPC network. | `string` | n/a | yes |
-| <a name="input_waf_version"></a> [waf\_version](#input\_waf\_version) | The Imperva WAF Gateway version to deploy (format: 'x.y.0.z', 'latest' or 'latest\_lts'). | `string` | n/a | yes |
+| <a name="input_waf_version"></a> [waf\_version](#input\_waf\_version) | The Imperva WAF Gateway version to deploy (format: 'x.y.0.z'). | `string` | n/a | yes |
 | <a name="input_zone"></a> [zone](#input\_zone) | The zone in which your Management Server instance will be deployed. Must be under the same region as the specified VPC network. | `string` | n/a | yes |
 | <a name="input_block_project_ssh_keys"></a> [block\_project\_ssh\_keys](#input\_block\_project\_ssh\_keys) | When true, project-wide SSH keys cannot be used to access the deployed instances. | `bool` | `false` | no |
 | <a name="input_deployment_name"></a> [deployment\_name](#input\_deployment\_name) | A unique prefix for all deployed resources. If not provided, a random prefix will be generated. | `string` | `""` | no |
