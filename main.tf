@@ -69,7 +69,7 @@ resource "random_string" "resource_prefix" {
 }
 
 resource "google_service_account" "deployment_service_account" {
-  account_id = "${local.resource_prefix}-svc-acc"
+  account_id = "${local.resource_prefix}-mx-svc-acc"
 }
 
 resource "google_secret_manager_secret" "mx_admin_secret" {
