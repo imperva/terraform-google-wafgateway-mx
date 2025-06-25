@@ -57,7 +57,8 @@ data "google_compute_subnetwork" "data_mx_subnet" {
 }
 
 module "commons" {
-  source = "../waf-gcp-commons"  
+  source = "imperva/wafgateway-commons/google"
+  version = "1.0.1"
 }
 
 resource "random_string" "resource_prefix" {
