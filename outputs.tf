@@ -1,5 +1,5 @@
 output "management_server_url" {
-  value = "https://${google_compute_instance.mx_instance.network_interface[0].network_ip}:8083"
+  value = "https://${try(google_compute_instance.mx_instance.network_interface[0].access_config[0].nat_ip, google_compute_instance.mx_instance.network_interface[0].network_ip)}:8083"
   depends_on = [
     # The Management Server URL should be made accessible only once the auto-FTL has finished
     time_sleep.await_mx_ftl
@@ -16,7 +16,21 @@ output "management_server_ip" {
   description = "The internal IP address of the WAF Management Server instance. Use this IP to register Gateways to your Management Server."
 }
 
+output "management_server_external_ip" {
+  value = try(google_compute_instance.mx_instance.network_interface[0].access_config[0].nat_ip, "")
+  depends_on = [
+    # The Management Server External IP should be made accessible only once the auto-FTL has finished
+    time_sleep.await_mx_ftl
+  ]
+  description = "The external IP address of the WAF Management Server instance. Use this IP to access the Management Server from outside the VPC network."
+}
+
 output "network_tag" {
   value = local.mx_tag
   description = "The network tag assigned to the Management Server instance. Use this tag to allow traffic from Gateways to the Management Server."
+}
+
+output "instance_name" {
+  value = google_compute_instance.mx_instance.name
+  description = "The name of the WAF Management Server instance."
 }
