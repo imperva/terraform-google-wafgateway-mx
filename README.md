@@ -41,12 +41,12 @@ module "imperva_mx" {
 ```
 ### Supported WAF Gateway versions
 This version of the module supports the following WAF Gateway versions:
-* 14.7.0.110
-* 14.7.0.120
 * 14.7.0.130
-* 15.2.0.10
+* 14.7.0.140
+* 14.7.0.150
 * 15.3.0.10
 * 15.3.0.20
+* 15.4.0.10
 
 The `waf_version` input variable must be set to one of these versions. If you need to use a different version, please open an issue or pull request.
 
@@ -70,7 +70,7 @@ This allows you to register your WAF Gateway instances to your MX without defini
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_commons"></a> [commons](#module\_commons) | ../waf-gcp-commons | n/a |
+| <a name="module_commons"></a> [commons](#module\_commons) | imperva/wafgateway-commons/google | 1.1.0 |
 ## Resources
 
 | Name | Type |
@@ -109,6 +109,8 @@ This allows you to register your WAF Gateway instances to your MX without defini
 
 | Name | Description |
 |------|-------------|
+| <a name="output_instance_name"></a> [instance\_name](#output\_instance\_name) | The name of the WAF Management Server instance. |
+| <a name="output_management_server_external_ip"></a> [management\_server\_external\_ip](#output\_management\_server\_external\_ip) | The external IP address of the WAF Management Server instance. Use this IP to access the Management Server from outside the VPC network. |
 | <a name="output_management_server_ip"></a> [management\_server\_ip](#output\_management\_server\_ip) | The internal IP address of the WAF Management Server instance. Use this IP to register Gateways to your Management Server. |
 | <a name="output_management_server_url"></a> [management\_server\_url](#output\_management\_server\_url) | The URL to access the WAF Management Server user interface. Use this URL to log in with the admin user and the password you provided. |
 | <a name="output_network_tag"></a> [network\_tag](#output\_network\_tag) | The network tag assigned to the Management Server instance. Use this tag to allow traffic from Gateways to the Management Server. |
