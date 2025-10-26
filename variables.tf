@@ -187,3 +187,9 @@ variable "waf_version" {
     error_message = module.commons.validation.gcp.waf_version.error_message
   }
 }
+
+variable "post_script" {
+  type        = string
+  description = "An optional bash script or command that will be executed at the end of the Gateway instance startup."
+  default     = ""
+}

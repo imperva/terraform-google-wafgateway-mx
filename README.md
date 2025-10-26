@@ -41,9 +41,9 @@ module "imperva_mx" {
 ```
 ### Supported WAF Gateway versions
 This version of the module supports the following WAF Gateway versions:
-* 14.7.0.130
 * 14.7.0.140
 * 14.7.0.150
+* 14.7.0.160
 * 15.3.0.10
 * 15.3.0.20
 * 15.4.0.10
@@ -70,7 +70,7 @@ This allows you to register your WAF Gateway instances to your MX without defini
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_commons"></a> [commons](#module\_commons) | imperva/wafgateway-commons/google | 1.1.0 |
+| <a name="module_commons"></a> [commons](#module\_commons) | imperva/wafgateway-commons/google | 1.2.0 |
 ## Resources
 
 | Name | Type |
@@ -101,6 +101,7 @@ This allows you to register your WAF Gateway instances to your MX without defini
 | <a name="input_enable_termination_protection"></a> [enable\_termination\_protection](#input\_enable\_termination\_protection) | When true, the Management Server instance will be protected from accidental deletion. | `bool` | `false` | no |
 | <a name="input_external_ip_address"></a> [external\_ip\_address](#input\_external\_ip\_address) | An unused external IPv4 address for your Management Server instance. Leave empty if no external IP address is needed. | `string` | `""` | no |
 | <a name="input_external_ip_network_tier"></a> [external\_ip\_network\_tier](#input\_external\_ip\_network\_tier) | The desired network service tier for your Management Server's external IP address. Leave empty if no external IP address is needed. | `string` | `""` | no |
+| <a name="input_post_script"></a> [post\_script](#input\_post\_script) | An optional bash script or command that will be executed at the end of the Gateway instance startup. | `string` | `""` | no |
 | <a name="input_private_ip_address"></a> [private\_ip\_address](#input\_private\_ip\_address) | A custom private IPv4 address for your Management Server instance. The address must be within the subnetwork's range. Leave empty for automatic assignment. | `string` | `""` | no |
 | <a name="input_ssh_access_source_ranges"></a> [ssh\_access\_source\_ranges](#input\_ssh\_access\_source\_ranges) | A list of IPv4 ranges in CIDR format that should have access to your Management Server via port 22 (e.g. 10.0.1.0/24). | `list(string)` | `[]` | no |
 | <a name="input_timezone"></a> [timezone](#input\_timezone) | The desired timezone for your Management Server instance. | `string` | `"UTC"` | no |
