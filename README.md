@@ -28,7 +28,7 @@ variable "mx_password" {
 
 module "imperva_mx" {
   source = "imperva/wafgateway/mx/google"
-  waf_version = "15.3.0.20"
+  waf_version = "15.4.0.10"
   mx_password = var.mx_password
   vpc_network = "my-vpc-network"
   subnet_name = "my-subnet"
@@ -54,8 +54,8 @@ The `waf_version` input variable must be set to one of these versions. If you ne
 If you are using the Gateway module in conjunction with the MX module, you can reference the MX outputs directly in the Gateway module configuration:
 ```hcl
 module "imperva_gw" {
-  source = "imperva/wafgateway/gw/google"
-  waf_version = "15.3.0.20"
+  source = "imperva/wafgateway-gw/google"
+  waf_version = "15.4.0.10"
   management_server_config = {
     ip = module.imperva_mx.management_server_ip
     password = var.mx_password
