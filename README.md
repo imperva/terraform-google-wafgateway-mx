@@ -41,9 +41,9 @@ module "imperva_mx" {
 ```
 ### Supported WAF Gateway versions
 This version of the module supports the following WAF Gateway versions:
-* 14.7.0.140
 * 14.7.0.150
 * 14.7.0.160
+* 14.7.0.170  
 * 15.3.0.10
 * 15.3.0.20
 * 15.4.0.10
