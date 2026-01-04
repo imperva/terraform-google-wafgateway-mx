@@ -58,7 +58,7 @@ data "google_compute_subnetwork" "data_mx_subnet" {
 
 module "commons" {
   source = "imperva/wafgateway-commons/google"
-  version = "1.2.1"
+  version = "1.2.2"
 }
 
 resource "random_string" "resource_prefix" {
