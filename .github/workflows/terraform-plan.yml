@@ -56,3 +56,4 @@ jobs:
         TF_VAR_ssh_access_source_ranges: ${{ vars.SSH_ACCESS_SOURCE_RANGES }}
         TF_VAR_ui_access_source_ranges: ${{ vars.UI_ACCESS_SOURCE_RANGES }}
         TF_VAR_deployment_name: ${{ vars.DEPLOYMENT_NAME }}
+        TF_VAR_instance_name: ${{ vars.INSTANCE_NAME }}
