@@ -32,22 +32,20 @@ jobs:
       run: terraform init
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-        GOOGLE_PROJECT: ${{ vars.GCP_PROJECT_ID }}
-        GOOGLE_REGION: ${{ vars.GCP_REGION }}
 
     - name: Terraform Validate
       run: terraform validate
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-        GOOGLE_PROJECT: ${{ vars.GCP_PROJECT_ID }}
-        GOOGLE_REGION: ${{ vars.GCP_REGION }}
+        TF_VAR_gcp_project_id: ${{ vars.GCP_PROJECT_ID }}
+        TF_VAR_gcp_region: ${{ vars.GCP_REGION }}
 
     - name: Terraform Plan
       run: terraform plan -input=false
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-        GOOGLE_PROJECT: ${{ vars.GCP_PROJECT_ID }}
-        GOOGLE_REGION: ${{ vars.GCP_REGION }}
+        TF_VAR_gcp_project_id: ${{ vars.GCP_PROJECT_ID }}
+        TF_VAR_gcp_region: ${{ vars.GCP_REGION }}
         TF_VAR_mx_password: ${{ secrets.MX_PASSWORD }}
         TF_VAR_vpc_network: ${{ vars.VPC_NETWORK }}
         TF_VAR_subnet_name: ${{ vars.SUBNET_NAME }}
