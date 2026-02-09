@@ -37,19 +37,19 @@ jobs:
       run: terraform validate
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-        TF_VAR_gcp_project_id: ${{ vars.PROJECT_ID }}
-        TF_VAR_gcp_region: ${{ vars.GCP_REGION }}
+        TF_VAR_project_id: ${{ vars.PROJECT_ID }}
+        TF_VAR_region: ${{ vars.REGION }}
 
     - name: Terraform Plan
       run: terraform plan -input=false
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-        TF_VAR_gcp_project_id: ${{ vars.PROJECT_ID }}
-        TF_VAR_gcp_region: ${{ vars.GCP_REGION }}
+        TF_VAR_project_id: ${{ vars.PROJECT_ID }}
+        TF_VAR_region: ${{ vars.REGION }}
         TF_VAR_mx_password: ${{ secrets.MX_PASSWORD }}
         TF_VAR_vpc_network: ${{ vars.VPC_NETWORK }}
         TF_VAR_subnet_name: ${{ vars.SUBNET_NAME }}
-        TF_VAR_zone: ${{ vars.GCP_ZONE }}
+        TF_VAR_zone: ${{ vars.ZONE }}
         TF_VAR_instance_type: ${{ vars.INSTANCE_TYPE }}
         TF_VAR_waf_version: ${{ vars.WAF_VERSION }}
         TF_VAR_timezone: ${{ vars.TIMEZONE }}
