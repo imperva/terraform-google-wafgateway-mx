@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   terraform:
-    name: 'Terraform'
+    name: 'Terraform Apply'
     runs-on: ubuntu-latest
     environment: development
     defaults:
@@ -44,7 +44,7 @@ jobs:
         TF_VAR_region: ${{ vars.REGION }}
 
     - name: Terraform Apply
-      run: terraform apply -input=false
+      run: terraform apply -auto-approve -input=false
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         TF_VAR_project_id: ${{ vars.PROJECT_ID }}
