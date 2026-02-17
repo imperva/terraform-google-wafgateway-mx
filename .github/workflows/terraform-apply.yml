@@ -1,7 +1,12 @@
 name: 'Terraform'
 
+# on:
+#   workflow_dispatch: # manual action run
+
 on:
-  workflow_dispatch: # manual action run
+  push:
+    branches:
+      - PP-12736-tf-workflow
 
 permissions:
   contents: read
