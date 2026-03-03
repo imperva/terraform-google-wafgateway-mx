@@ -1,7 +1,9 @@
-name: 'Terraform'
+name: 'Terraform Plan'
 
 on:
-  workflow_dispatch: # manual action run
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -9,11 +11,7 @@ permissions:
 jobs:
   terraform:
     name: 'Terraform Plan'
-    runs-on: ubuntu-latest
-    environment: development
-    defaults:
-      run:
-        shell: bash
+    runs-on: self-hosted
 
     steps:
     # Checkout the repository to the GitHub Actions runner
