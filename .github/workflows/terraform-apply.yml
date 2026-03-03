@@ -1,12 +1,8 @@
-name: 'Terraform'
-
-# on:
-#   workflow_dispatch: # manual action run
+name: 'Terraform Apply'
 
 on:
-  push:
-    branches:
-      - PP-12736-tf-workflow
+  issue_comment:
+    types: [edited, created]
 
 permissions:
   contents: read
@@ -14,21 +10,15 @@ permissions:
 jobs:
   terraform:
     name: 'Terraform Apply'
-    runs-on: ubuntu-latest
-    environment: development
-    defaults:
-      run:
-        shell: bash
+    runs-on: self-hosted
+    if: |
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '/terraform_apply')
 
     steps:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v3
-
-    # Install the latest version of Terraform
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-
 
     #  Run Terraform commands
     - name: Terraform Init
@@ -58,5 +48,5 @@ jobs:
         TF_VAR_timezone: ${{ vars.TIMEZONE }}
         TF_VAR_ssh_access_source_ranges: ${{ vars.SSH_ACCESS_SOURCE_RANGES }}
         TF_VAR_ui_access_source_ranges: ${{ vars.UI_ACCESS_SOURCE_RANGES }}
-        TF_VAR_deployment_name: ${{ vars.DEPLOYMENT_NAME }}
+        TF_VAR_deployment_name: "github-${{ github.event.pull_request.number }}-${{ github.run_id }}"
         TF_VAR_instance_name: ${{ vars.INSTANCE_NAME }}
