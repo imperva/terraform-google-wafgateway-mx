@@ -53,5 +53,5 @@ jobs:
         TF_VAR_timezone: ${{ vars.TIMEZONE }}
         TF_VAR_ssh_access_source_ranges: ${{ vars.SSH_ACCESS_SOURCE_RANGES }}
         TF_VAR_ui_access_source_ranges: ${{ vars.UI_ACCESS_SOURCE_RANGES }}
-        TF_VAR_deployment_name: "gh-${{ github.event.issue.number }}-${{ github.run_number }}"
+        TF_VAR_deployment_name: "gh-${{ github.event.pull_request.number }}-${{ github.run_number }}"
         TF_VAR_instance_name: ${{ vars.INSTANCE_NAME }}
