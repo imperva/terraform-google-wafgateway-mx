@@ -1,3 +1,13 @@
+variable "project_id" {
+  type        = string
+  description = "The GCP project ID."
+}
+
+variable "region" {
+  type        = string
+  description = "The GCP region where resources will be deployed."
+}
+
 variable "deployment_name" {
   type        = string
   description = "A unique prefix for all deployed resources. If not provided, a random prefix will be generated."
