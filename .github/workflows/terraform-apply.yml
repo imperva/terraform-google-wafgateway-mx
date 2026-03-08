@@ -12,9 +12,8 @@ jobs:
     name: 'Terraform Test'
     runs-on: self-hosted
     if: |
-      (github.event_name == 'issue_comment' && 
-      github.event.issue.pull_request != '' &&
-      contains(github.event.comment.body, '/test'))
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '/test')
 
     steps:
     - name: Checkout
