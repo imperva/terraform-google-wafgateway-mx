@@ -31,8 +31,8 @@ jobs:
         STATE_DIR="/opt/terraform/state/${REPO_NAME}/pr-${PR_NUMBER}"
         OUTPUT_DIR="/opt/terraform/outputs/${REPO_NAME}/pr-${PR_NUMBER}"
 
-        mkdir -p "$STATE_DIR"
-        mkdir -p "$OUTPUT_DIR"
+        sudo mkdir -p "$STATE_DIR"
+        sudo mkdir -p "$OUTPUT_DIR"
 
         echo "state_file=$STATE_DIR/terraform.tfstate"        >> $GITHUB_OUTPUT
         echo "output_file=$OUTPUT_DIR/terraform_outputs.json" >> $GITHUB_OUTPUT
