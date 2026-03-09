@@ -29,11 +29,11 @@ jobs:
         PR_NUMBER="${{ github.event.issue.number }}"
         RUN_NUMBER="${{ github.run_number }}"
 
-        STATE_DIR="/opt/terraform/state/${REPO_NAME}/pr-${PR_NUMBER}-run-${RUN_NUMBER}"
-        OUTPUT_DIR="/opt/terraform/outputs/${REPO_NAME}/pr-${PR_NUMBER}-run-${RUN_NUMBER}"
+        STATE_DIR="/home/ubuntu/terraform/state/${REPO_NAME}/pr-${PR_NUMBER}-run-${RUN_NUMBER}"
+        OUTPUT_DIR="/home/ubuntu/terraform/outputs/${REPO_NAME}/pr-${PR_NUMBER}-run-${RUN_NUMBER}"
 
-        sudo mkdir -p "$STATE_DIR"
-        sudo mkdir -p "$OUTPUT_DIR"
+        mkdir -p "$STATE_DIR"
+        mkdir -p "$OUTPUT_DIR"
 
         echo "state_file=$STATE_DIR/terraform.tfstate"        >> $GITHUB_OUTPUT
         echo "output_file=$OUTPUT_DIR/terraform_outputs.json" >> $GITHUB_OUTPUT
