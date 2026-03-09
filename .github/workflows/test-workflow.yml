@@ -1,0 +1,12 @@
+name: Workflow Test
+
+on:
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  terraform-test:
+    runs-on: self-hosted
+
+    steps:
+      - run: echo "Workflow triggered"
