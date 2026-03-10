@@ -15,8 +15,9 @@ jobs:
     if: |
       (github.event_name == 'pull_request') ||
       (github.event_name == 'issue_comment' && 
-      github.event.issue.pull_request != '' &&
-      contains(github.event.comment.body, '/test'))
+       github.event.issue.pull_request != '' &&
+       (contains(github.event.comment.body, '/test') ||
+        contains(github.event.comment.body, '/rc_test')))
 
     steps:
     - name: Checkout
@@ -26,7 +27,7 @@ jobs:
       id: paths
       run: |
         REPO_NAME="${{ github.event.repository.name }}"
-        PR_NUMBER="${{ github.event.issue.number }}"
+        PR_NUMBER="${{ github.event.pull_request.number }}"
         RUN_NUMBER="${{ github.run_number }}"
 
         STATE_DIR="/home/ubuntu/terraform/state/${REPO_NAME}/pr-${PR_NUMBER}-run-${RUN_NUMBER}"
@@ -81,6 +82,10 @@ jobs:
           -auto-approve \
           -input=false \
           -state="${{ steps.paths.outputs.state_file }}"
+      if: |
+        github.event_name == 'pull_request' ||
+        (github.event_name == 'issue_comment' &&
+        contains(github.event.comment.body, '/test'))
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         TF_VAR_project_id: ${{ vars.PROJECT_ID }}
