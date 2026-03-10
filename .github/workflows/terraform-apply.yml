@@ -13,11 +13,10 @@ jobs:
     name: 'Terraform Apply'
     runs-on: self-hosted
     if: |
-      (github.event_name == 'pull_request') ||
-      (github.event_name == 'issue_comment' && 
-       github.event.issue.pull_request != '' &&
-       (contains(github.event.comment.body, '/test') ||
-        contains(github.event.comment.body, '/rc_test')))
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request != null &&
+      (contains(github.event.comment.body, '/test') ||
+      contains(github.event.comment.body, '/rc_test'))
 
     steps:
     - name: Checkout
@@ -101,3 +100,27 @@ jobs:
         TF_VAR_ui_access_source_ranges: ${{ vars.UI_ACCESS_SOURCE_RANGES }}
         TF_VAR_deployment_name: "gh-${{ github.event.pull_request.number }}-${{ github.run_number }}"
         TF_VAR_instance_name: ${{ vars.INSTANCE_NAME }}
+
+    ## Note: if workflow is cancelled, destroy. TO BE TESTED    
+    # - name: Terraform Destroy on Cancel
+    #   if: cancelled()
+    #   run: |
+    #     terraform destroy \
+    #       -auto-approve \
+    #       -input=false \
+    #       -state="${{ steps.paths.outputs.state_file }}"
+    #   env:
+    #     GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+    #     TF_VAR_project_id: ${{ vars.PROJECT_ID }}
+    #     TF_VAR_region: ${{ vars.REGION }}
+    #     TF_VAR_mx_password: ${{ secrets.MX_PASSWORD }}
+    #     TF_VAR_vpc_network: ${{ vars.VPC_NETWORK }}
+    #     TF_VAR_subnet_name: ${{ vars.SUBNET_NAME }}
+    #     TF_VAR_zone: ${{ vars.ZONE }}
+    #     TF_VAR_instance_type: ${{ vars.INSTANCE_TYPE }}
+    #     TF_VAR_waf_version: ${{ vars.WAF_VERSION }}
+    #     TF_VAR_timezone: ${{ vars.TIMEZONE }}
+    #     TF_VAR_ssh_access_source_ranges: ${{ vars.SSH_ACCESS_SOURCE_RANGES }}
+    #     TF_VAR_ui_access_source_ranges: ${{ vars.UI_ACCESS_SOURCE_RANGES }}
+    #     TF_VAR_deployment_name: "gh-${{ github.event.pull_request.number }}-${{ github.run_number }}"
+    #     TF_VAR_instance_name: ${{ vars.INSTANCE_NAME }}
