@@ -10,7 +10,7 @@ jobs:
   terraform:
     name: 'Terraform Apply'
     runs-on: self-hosted
-    if: github.event.issue.pull_request && (contains(github.event.comment.body, '/test') || contains(github.event.comment.body, '/rc_test'))
+    if: ${{ github.event.issue.pull_request && (contains(github.event.comment.body, '/test') || contains(github.event.comment.body, '/rc_test')) }}
 
     steps:
     - name: Checkout
@@ -75,7 +75,7 @@ jobs:
           -auto-approve \
           -input=false \
           -state="${{ steps.paths.outputs.state_file }}"
-      if: github.event.issue.pull_request && contains(github.event.comment.body, '/test')
+      if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/test') }}
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
         TF_VAR_project_id: ${{ vars.PROJECT_ID }}
