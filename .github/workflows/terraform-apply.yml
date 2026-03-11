@@ -1,0 +1,117 @@
+on:
+  issue_comment:
+    types: [edited, created]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  terraform:
+    name: 'Terraform Apply'
+    runs-on: self-hosted
+    if: github.event.issue.pull_request && (contains(github.event.comment.body, '/test') || contains(github.event.comment.body, '/rc_test'))
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set Workspace Paths
+      id: paths
+      run: |
+        REPO_NAME="${{ github.event.repository.name }}"
+        PR_NUMBER="${{ github.event.pull_request.number }}"
+        RUN_NUMBER="${{ github.run_number }}"
+
+        STATE_DIR="/home/ubuntu/terraform/state/${REPO_NAME}/pr-${PR_NUMBER}-run-${RUN_NUMBER}"
+        OUTPUT_DIR="/home/ubuntu/terraform/outputs/${REPO_NAME}/pr-${PR_NUMBER}-run-${RUN_NUMBER}"
+
+        mkdir -p "$STATE_DIR"
+        mkdir -p "$OUTPUT_DIR"
+
+        echo "state_file=$STATE_DIR/terraform.tfstate"        >> $GITHUB_OUTPUT
+        echo "output_file=$OUTPUT_DIR/terraform_outputs.json" >> $GITHUB_OUTPUT
+
+    - name: Terraform Init
+      run: terraform init
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+
+    - name: Terraform Apply
+      run: |
+        terraform apply \
+          -auto-approve \
+          -input=false \
+          -state="${{ steps.paths.outputs.state_file }}"
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        TF_VAR_project_id: ${{ vars.PROJECT_ID }}
+        TF_VAR_region: ${{ vars.REGION }}
+        TF_VAR_mx_password: ${{ secrets.MX_PASSWORD }}
+        TF_VAR_vpc_network: ${{ vars.VPC_NETWORK }}
+        TF_VAR_subnet_name: ${{ vars.SUBNET_NAME }}
+        TF_VAR_zone: ${{ vars.ZONE }}
+        TF_VAR_instance_type: ${{ vars.INSTANCE_TYPE }}
+        TF_VAR_waf_version: ${{ vars.WAF_VERSION }}
+        TF_VAR_timezone: ${{ vars.TIMEZONE }}
+        TF_VAR_ssh_access_source_ranges: ${{ vars.SSH_ACCESS_SOURCE_RANGES }}
+        TF_VAR_ui_access_source_ranges: ${{ vars.UI_ACCESS_SOURCE_RANGES }}
+        TF_VAR_deployment_name: "gh-${{ github.event.pull_request.number }}-${{ github.run_number }}"
+        TF_VAR_instance_name: ${{ vars.INSTANCE_NAME }}
+
+    - name: Save Terraform Outputs
+      run: |
+        terraform output \
+          -state="${{ steps.paths.outputs.state_file }}" \
+          -json \
+          | jq 'to_entries | map({(.key): .value.value}) | add' \
+          > "${{ steps.paths.outputs.output_file }}"
+        echo "--- Saved outputs ---"
+        cat "${{ steps.paths.outputs.output_file }}"
+
+    - name: Terraform Destroy
+      run: |
+        terraform destroy \
+          -auto-approve \
+          -input=false \
+          -state="${{ steps.paths.outputs.state_file }}"
+      if: github.event.issue.pull_request && contains(github.event.comment.body, '/test')
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        TF_VAR_project_id: ${{ vars.PROJECT_ID }}
+        TF_VAR_region: ${{ vars.REGION }}
+        TF_VAR_mx_password: ${{ secrets.MX_PASSWORD }}
+        TF_VAR_vpc_network: ${{ vars.VPC_NETWORK }}
+        TF_VAR_subnet_name: ${{ vars.SUBNET_NAME }}
+        TF_VAR_zone: ${{ vars.ZONE }}
+        TF_VAR_instance_type: ${{ vars.INSTANCE_TYPE }}
+        TF_VAR_waf_version: ${{ vars.WAF_VERSION }}
+        TF_VAR_timezone: ${{ vars.TIMEZONE }}
+        TF_VAR_ssh_access_source_ranges: ${{ vars.SSH_ACCESS_SOURCE_RANGES }}
+        TF_VAR_ui_access_source_ranges: ${{ vars.UI_ACCESS_SOURCE_RANGES }}
+        TF_VAR_deployment_name: "gh-${{ github.event.pull_request.number }}-${{ github.run_number }}"
+        TF_VAR_instance_name: ${{ vars.INSTANCE_NAME }}
+
+    ## Note: if workflow is cancelled, destroy. TO BE TESTED    
+    # - name: Terraform Destroy on Cancel
+    #   if: cancelled()
+    #   run: |
+    #     terraform destroy \
+    #       -auto-approve \
+    #       -input=false \
+    #       -state="${{ steps.paths.outputs.state_file }}"
+    #   env:
+    #     GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+    #     TF_VAR_project_id: ${{ vars.PROJECT_ID }}
+    #     TF_VAR_region: ${{ vars.REGION }}
+    #     TF_VAR_mx_password: ${{ secrets.MX_PASSWORD }}
+    #     TF_VAR_vpc_network: ${{ vars.VPC_NETWORK }}
+    #     TF_VAR_subnet_name: ${{ vars.SUBNET_NAME }}
+    #     TF_VAR_zone: ${{ vars.ZONE }}
+    #     TF_VAR_instance_type: ${{ vars.INSTANCE_TYPE }}
+    #     TF_VAR_waf_version: ${{ vars.WAF_VERSION }}
+    #     TF_VAR_timezone: ${{ vars.TIMEZONE }}
+    #     TF_VAR_ssh_access_source_ranges: ${{ vars.SSH_ACCESS_SOURCE_RANGES }}
+    #     TF_VAR_ui_access_source_ranges: ${{ vars.UI_ACCESS_SOURCE_RANGES }}
+    #     TF_VAR_deployment_name: "gh-${{ github.event.pull_request.number }}-${{ github.run_number }}"
+    #     TF_VAR_instance_name: ${{ vars.INSTANCE_NAME }}
