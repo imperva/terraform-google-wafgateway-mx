@@ -13,6 +13,14 @@ jobs:
     if: ${{ github.event.issue.pull_request && (contains(github.event.comment.body, '/test') || contains(github.event.comment.body, '/rc_test')) }}
 
     steps:
+    - name: Check User Access
+      if: ${{ github.event.comment.author_association != 'OWNER' && github.event.comment.author_association != 'COLLABORATOR' }}
+      run: |
+        echo "User ${{ github.event.comment.user.login }} is not authorized to trigger this workflow."
+        echo "User: ${{ github.event.comment.user.login }}"
+        echo "Association: ${{ github.event.comment.author_association }}"
+        exit 1
+
     - name: Checkout
       uses: actions/checkout@v3
 
